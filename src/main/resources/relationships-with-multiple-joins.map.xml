@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<data-map xmlns="http://cayenne.apache.org/schema/9/modelMap"
+	 xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	 xsi:schemaLocation="http://cayenne.apache.org/schema/9/modelMap http://cayenne.apache.org/schema/9/modelMap.xsd"
+	 project-version="9">
+	<db-entity name="invoice">
+		<db-attribute name="invoice_number" type="INTEGER" isPrimaryKey="true" isMandatory="true"/>
+		<db-attribute name="year" type="INTEGER" isPrimaryKey="true" isMandatory="true"/>
+	</db-entity>
+	<db-entity name="invoice_line">
+		<db-attribute name="invoice_number" type="INTEGER" isPrimaryKey="true" isMandatory="true"/>
+		<db-attribute name="line_number" type="INTEGER" isPrimaryKey="true" isMandatory="true"/>
+		<db-attribute name="year" type="INTEGER" isPrimaryKey="true" isMandatory="true"/>
+	</db-entity>
+	<obj-entity name="Invoice" className="org.apache.cayenne.testdo.relationships_with_multiple_joins.Invoice" dbEntityName="invoice">
+		<obj-attribute name="invoiceNumber" type="int" db-attribute-path="invoice_number"/>
+		<obj-attribute name="year" type="int" db-attribute-path="year"/>
+	</obj-entity>
+	<obj-entity name="InvoiceLine" className="org.apache.cayenne.testdo.relationships_with_multiple_joins.InvoiceLine" dbEntityName="invoice_line">
+		<obj-attribute name="invoiceNumber" type="int" db-attribute-path="invoice_number"/>
+		<obj-attribute name="lineNumber" type="int" db-attribute-path="line_number"/>
+		<obj-attribute name="year" type="int" db-attribute-path="year"/>
+	</obj-entity>
+	<db-relationship name="invoice_lines" source="invoice" target="invoice_line" toDependentPK="true" toMany="true">
+		<db-attribute-pair source="year" target="year"/>
+		<db-attribute-pair source="invoice_number" target="invoice_number"/>
+	</db-relationship>
+	<db-relationship name="invoice1" source="invoice_line" target="invoice" toMany="false">
+		<db-attribute-pair source="year" target="year"/>
+		<db-attribute-pair source="invoice_number" target="invoice_number"/>
+	</db-relationship>
+	<obj-relationship name="invoiceLines" source="Invoice" target="InvoiceLine" deleteRule="Deny" db-relationship-path="invoice_lines"/>
+	<obj-relationship name="invoice" source="InvoiceLine" target="Invoice" deleteRule="Nullify" db-relationship-path="invoice1"/>
+</data-map>
